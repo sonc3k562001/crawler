@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31402.337
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DanTriNew", "DanTriNew\DanTriNew.csproj", "{3EAD5363-4930-4411-B951-EFAA79DB0CC3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestClawer", "UnitTestClawer\UnitTestClawer.csproj", "{C74493AB-A490-46D7-9156-6BD5C14B121D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3EAD5363-4930-4411-B951-EFAA79DB0CC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EAD5363-4930-4411-B951-EFAA79DB0CC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EAD5363-4930-4411-B951-EFAA79DB0CC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EAD5363-4930-4411-B951-EFAA79DB0CC3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C74493AB-A490-46D7-9156-6BD5C14B121D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C74493AB-A490-46D7-9156-6BD5C14B121D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C74493AB-A490-46D7-9156-6BD5C14B121D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C74493AB-A490-46D7-9156-6BD5C14B121D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {287E62E6-3D13-4E39-85F8-8BDBE0704CD0}
+	EndGlobalSection
+EndGlobal
