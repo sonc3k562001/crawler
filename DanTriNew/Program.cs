@@ -50,7 +50,7 @@ namespace DanTriNew
 
         private static async Task EventAsync()
         {
-            var url = "https://dantri.com.vn/";
+            var url = "https://dantri.com.vn";
             var httpClient = new HttpClient();
             var  html = await httpClient.GetStringAsync(url);
             var htmlDocument = new HtmlDocument();
@@ -59,10 +59,10 @@ namespace DanTriNew
             var ulsk = htmlDocument.DocumentNode.SelectSingleNode("/html/body/main/div[2]/div[4]/div[1]/ul[1]");
             var lis = ulsk.SelectNodes("li");
             var ListPost = new List<Post>();
-            foreach(var li in lis)
+            foreach (var li in lis)
             {
-                
-                var htmlPost = await httpClient.GetStringAsync(url+ li.Descendants("a").FirstOrDefault().ChildAttributes("href").FirstOrDefault().Value);
+
+                var htmlPost = await httpClient.GetStringAsync(url + li.Descendants("a").FirstOrDefault().ChildAttributes("href").FirstOrDefault().Value);
                 var htmlDocumentPost = new HtmlDocument();
                 htmlDocumentPost.LoadHtml(htmlPost);
 
@@ -72,23 +72,25 @@ namespace DanTriNew
                 Regex expression = new Regex(@"(?<slug>.+?)\/(.+?)(?<postid>[0-9]{8,20})(.+?)$");
 
                 Match match = expression.Match(li.Descendants("a").FirstOrDefault().ChildAttributes("href").FirstOrDefault().Value);
-                var postID ="" ;
-                if (match.Success) 
+                var postID = "";
+                var cateName = "";
+                if (match.Success)
                 {
                     // ... Get group by name.
                     postID = match.Groups["postid"].Value;
-                    Console.WriteLine("postid: ", postID.GetType());
+                    cateName = match.Groups["slug"].Value;
+                    Console.WriteLine("postid: ", postID);
                 }
-                 var sonid = long.Parse(postID);
+
                 try
                 {
-                  
-
                     var newPost = new Post
                     {
                         Title = title,
                         Content = content,
-                        Id = sonid
+                        Id = long.Parse(postID),
+                        CategoryName = cateName
+                        
                     };
                     ListPost.Add(newPost);
                 }
@@ -98,8 +100,41 @@ namespace DanTriNew
                     continue;
                     //throw;
                 }
+
             }
 
+            string MyConnection = "Data Source=localhost;Initial Catalog=crawler;User ID=sa;Password=abc123";
+
+            try
+            {
+
+                foreach (var item in ListPost)
+                {
+
+                    using (SqlConnection openCon = new SqlConnection(MyConnection))
+                    {
+                        using (var command = new SqlCommand("SP_ListPost", openCon)
+                        {
+                            CommandType = CommandType.StoredProcedure
+                        })
+                        {
+                            command.Parameters.Add(new SqlParameter("@ID", item.Id));
+                            command.Parameters.Add(new SqlParameter("@Title", item.Title));
+                            command.Parameters.Add(new SqlParameter("@Content", item.Content));
+                            command.Parameters.Add(new SqlParameter("@CategorName", item.CategoryName));
+                            openCon.Open();
+                            command.ExecuteNonQuery();
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                Console.WriteLine("Lỗi" + e);
+            }
         }
 
         private static async Task startCrawlerasync()
@@ -156,12 +191,12 @@ namespace DanTriNew
 
             try
             {
-                int count = categories.Count;
+                
 
                 foreach (var item in categories)
                 {
-                    for (int i = 0; i < count; i++)
-                    {
+                    //for (int i = 0; i < count; i++)
+                    //{
                         using (SqlConnection openCon = new SqlConnection(MyConnection))
                         {
                             using (var command = new SqlCommand("SP_Insert_Category", openCon)
@@ -169,35 +204,28 @@ namespace DanTriNew
                                 CommandType = CommandType.StoredProcedure
                             })
                             {
-                                command.Parameters.Add(new SqlParameter("@ID", categories[i].id));
-                                command.Parameters.Add(new SqlParameter("@Name", categories[i].name));
-                                command.Parameters.Add(new SqlParameter("@Link", categories[i].link));
-                                command.Parameters.Add(new SqlParameter("@Slug", categories[i].slug));
+                                command.Parameters.Add(new SqlParameter("@ID", item.id));
+                                command.Parameters.Add(new SqlParameter("@Name", item.name));
+                                command.Parameters.Add(new SqlParameter("@Link", item.link));
+                                command.Parameters.Add(new SqlParameter("@Slug", item.slug));
 
                                 openCon.Open();
                                 command.ExecuteNonQuery();
                             }
-
-
-
-
-                        }
+                        //}
                     }
-                    count = 0;
+                    
                 }
+
+
+
+           
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
-            //con.Close();
-            Console.WriteLine("Successfull...");
-            Console.WriteLine("Press enter to exit the program...");
-            ConsoleKeyInfo keyinfor = Console.ReadKey(true);
-            if (keyinfor.Key == ConsoleKey.Enter)
-            {
-                System.Environment.Exit(0);
-            }
+            
 
         }
     }
